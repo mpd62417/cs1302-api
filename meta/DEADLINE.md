@@ -10,7 +10,7 @@ Markdown is transformed into nice looking HTML.
 > Please provide a firendly description of your app, including the the primary functions available to users of the app. Be sure to describe
 > exactly what APIs you are using and how they are connected in a meaningful way.
 
-> ***Also, include the GitHub https URL to your repository.
+> Also, include the GitHub https URL to your repository.
 
     This app allows users to enter cities in the US and returns a list of buttons of 45 different birds spotted in that area.
     All of those buttons can be clicked on to redirect the user to a Wikipedia article about that bird. One API used was the
@@ -18,7 +18,7 @@ Markdown is transformed into nice looking HTML.
     used with the eBird API to return a list of bird spotted within fifty kilometers of those coordinates. Finally, all of
     bird names were used as title names with the Wikipedia API to return the specified article of that bird.
 
-    HTTPS link: https://github.com/mpd62417/cs1302-api.git
+    https://github.com/mpd62417/cs1302-api.git
 
 ## Part 2: New
 
