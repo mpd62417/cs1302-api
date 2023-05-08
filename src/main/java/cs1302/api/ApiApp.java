@@ -41,10 +41,6 @@ import java.util.Optional;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonElement;
-
 
 /**
  * App that converts city name and state to latitude and longitude, finds the first 45 birds
@@ -152,7 +148,6 @@ public class ApiApp extends Application {
             state.setOnAction(e -> {
                 stateName = state.getText();
                 dropdown.setText(stateName);
-                System.out.println(stateName);
             });
             dropdown.getItems().add(state);
         } // for
@@ -161,7 +156,6 @@ public class ApiApp extends Application {
             backward.setDisable(false);
             count += 9;
             setLinks();
-            System.out.println("ELSE: " + count);
             if (count == 36) {
                 forward.setDisable(true);
             } // if
@@ -250,10 +244,6 @@ public class ApiApp extends Application {
 
             String jsonString = response.body();
             zipResponse = GSON.fromJson(jsonString, ZipResponse.class);
-
-            System.out.println("LAtitude: " + zipResponse.getLatitude());
-            System.out.println("Longitude: " + zipResponse.getLongitude());
-
             eBirdRequest();
 
         } catch (IOException | InterruptedException |
@@ -292,10 +282,8 @@ public class ApiApp extends Application {
 
             String jsonString = response.body();
             birdResults = GSON.fromJson(jsonString, BirdResult[].class);
-            System.out.println(birdResults);
-            for (int i = 0; i < 45; i ++) {
+            for (int i = 0; i < birdResults.length; i ++) {
                 String bird = birdResults[i].comName;
-                System.out.println(i + " : " + bird);
             } // for
 
         } catch (IOException | InterruptedException |
@@ -329,17 +317,16 @@ public class ApiApp extends Application {
             } // if
 
             String jsonString = response.body();
-            JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
-            JsonObject pages = jsonObject.getAsJsonObject("query").getAsJsonObject("pages");
-            JsonElement page = pages.entrySet().iterator().next().getValue();
-            String url = page.getAsJsonObject().get("fullurl").getAsString();
-            System.out.println(url);
+            WikiResponse wikiResponse = GSON.fromJson(jsonString, WikiResponse.class);
+            String wikiUrl = wikiResponse.getUrl();
             webView = new WebView();
-            webView.getEngine().load(url);
+            webView.getEngine().load(wikiUrl);
             stackPane.getChildren().add(webView);
+            instructions.setText("Article for " + bird);
             forward.setDisable(true);
             backward.setDisable(true);
             backToBirds.setDisable(false);
+            count = 0;
             backToBirds.setOnAction(e -> setLinks());
         } catch (IOException | InterruptedException |
             IllegalArgumentException | IllegalStateException e) {
@@ -353,6 +340,7 @@ public class ApiApp extends Application {
      */
     private void setLinks() {
         backToBirds.setDisable(true);
+        forward.setDisable(false);
         row1 = new HBox();
         row2 = new HBox();
         row3 = new HBox();
@@ -364,7 +352,6 @@ public class ApiApp extends Application {
                     button.setWrapText(true);
                     button.setOnAction(e -> wikiRequest(button.getText()));
                     row1.getChildren().add(button);
-                    System.out.println(i + count);
                 } // for
 
                 for (int i = 3; i < 6; i ++) {
@@ -373,7 +360,6 @@ public class ApiApp extends Application {
                     button.setWrapText(true);
                     button.setOnAction(e -> wikiRequest(button.getText()));
                     row2.getChildren().add(button);
-                    System.out.println(i + count);
                 } // for
 
                 for (int i = 6; i < 9; i ++) {
@@ -382,16 +368,14 @@ public class ApiApp extends Application {
                     button.setWrapText(true);
                     button.setOnAction(e -> wikiRequest(button.getText()));
                     row3.getChildren().add(button);
-                    System.out.println(i + count);
                 } // for
                 row2.setTranslateY(150);
                 row3.setTranslateY(300);
                 Platform.runLater(() -> stackPane.getChildren().remove(banner));
                 Platform.runLater(() -> stackPane.getChildren().addAll(row1, row2, row3));
                 searchButton.setDisable(false);
-                instructions.setText("Birds within 30 kilometers of " + zipResponse.getPlaceName() +
-                    ", " + stateName);
-                forward.setDisable(false);
+                instructions.setText("Birds seen within 50 kilometers of "
+                    + zipResponse.getPlaceName() + ", " + stateName);
 
             } catch (ArrayIndexOutOfBoundsException e) {
                 searchButton.setDisable(false);
