@@ -248,6 +248,7 @@ public class ApiApp extends Application {
 
         } catch (IOException | InterruptedException |
             IllegalArgumentException | IllegalStateException e) {
+            instructions.setText("Last attempt to get birds failed. Try a different city.");
             alertError(e);
         } // try
 
@@ -288,6 +289,7 @@ public class ApiApp extends Application {
 
         } catch (IOException | InterruptedException |
             IllegalArgumentException | IllegalStateException e) {
+            instructions.setText("Last attempt to get birds failed. Try a different city.");
             alertError(e);
         } // try
 
@@ -330,6 +332,7 @@ public class ApiApp extends Application {
             backToBirds.setOnAction(e -> setLinks());
         } catch (IOException | InterruptedException |
             IllegalArgumentException | IllegalStateException e) {
+            instructions.setText("Last attempt to get birds failed. Try a different city.");
             alertError(e);
         } // try
     } // wikiRequest
